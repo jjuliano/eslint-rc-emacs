@@ -51,17 +51,17 @@
                    "https://github.com/jjuliano/eslint-rc-emacs"))
 
 (defcustom eslint-rc-use-package-json nil
-  "If non-nil, eslint-rc will use `package.json' file."
+  "If non-nil, `eslint-rc' will use `package.json' file."
   :type 'boolean
   :group 'eslint-rc)
 
 (defcustom eslint-rc-use-eslintignore t
-  "If non-nil, eslint-rc will use `.eslintignore' file."
+  "If non-nil, `eslint-rc' will use `.eslintignore' file."
   :type 'boolean
   :group 'eslint-rc)
 
 (defcustom eslint-rc-use-node-modules-bin t
-  "If non-nil, eslint-rc will search `node_modules' for `eslint' bin."
+  "If non-nil, `eslint-rc' will search `node_modules' for `eslint' bin."
   :type 'boolean
   :group 'eslint-rc)
 
