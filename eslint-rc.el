@@ -36,13 +36,6 @@
 
 (require 'eslint-fix)
 
-;; make free variable as buffer local
-(make-variable-buffer-local 'eslint-fix-options)
-(make-variable-buffer-local 'eslint-fix-executable)
-(make-variable-buffer-local 'eslint-rc-use-package-json)
-(make-variable-buffer-local 'eslint-rc-use-eslintignore)
-(make-variable-buffer-local 'eslint-rc-use-node-modules-bin)
-
 (defgroup eslint-rc nil
   "Minor mode to format JS code on file save using local rc rules"
   :group 'languages
@@ -125,9 +118,11 @@
               (setq eslint-fix-executable eslint)))))
 
   ;; finally call eslint --fix
-  ;; (setq eslint-fix-executable "eslint")
   (eslint-fix)
-  (message "Applied `%s' --fix with args `%s'" eslint-fix-executable eslint-fix-options))
+  (message "Applied `%s' --fix with args `%s'" eslint-fix-executable
+           (if (bound-and-true-p eslint-fix-options)
+               eslint-fix-options
+             "none")))
 
 ;;;###autoload
 (define-minor-mode eslint-rc-mode
