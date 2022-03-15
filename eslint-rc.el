@@ -140,7 +140,7 @@
 
 (declare-function eslint-rc--build-config "eslint-rc" (file))
 (declare-function eslint-rc--add-file "eslint-rc" (file))
-(declare-function eslint-rc--find-config "eslint-rc" (file))
+(declare-function eslint-rc--find-file "eslint-rc" (file))
 
 (provide 'eslint-rc)
 ;;; eslint-rc.el ends here
