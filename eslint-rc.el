@@ -9,7 +9,7 @@
 ;; Author: Joel Bryan Juliano <joelbryan dot juliano at gmail dot com>
 ;; Created: 15 March 2022
 ;; URL: https://github.com/jjuliano/eslint-rc-emacs
-;; Package-Requires: ((emacs "24") (eslint-fix "0.1.0"))
+;; Package-Requires: ((emacs "24.3") (eslint-fix "0.1.0"))
 ;; Version: 0.1.0
 ;; Keywords: convenience edit js ts rc eslintrc eslint-rc eslint eslint-fix
 
@@ -35,6 +35,7 @@
 ;;; Code:
 
 (require 'eslint-fix)
+(require 'cl-lib)
 
 (defgroup eslint-rc nil
   "Minor mode to format JS code on file save using local rc rules"
@@ -63,33 +64,36 @@
   (interactive)
 
   (let (args)
-    (flet ((eslint-rc--add-file (file) ;; Builds and store the local rc FILE list if found.
-                                (list :file (concat (locate-dominating-file default-directory file)
-                                                    file)))
-           (eslint-rc--find-file (file) ;; Search the local base directory for local FILE and store to list.
-                                 (if (bound-and-true-p file)
-                                     (if (locate-dominating-file default-directory file)
-                                         (append (eslint-rc--add-file file)))))
-           (eslint-rc--build-config (file) ;; Build the config arguments
-                                    (if (eslint-rc--find-file file)
-                                        (cond ((string= file ".eslintignore") ;; check if `.eslintignore' will be skipped
-                                               (if (bound-and-true-p eslint-rc-use-eslintignore)
-                                                   (push (concat "--ignore-path " (concat (locate-dominating-file
-                                                                                           default-directory file) file))
-                                                         args)))
-                                              ;; check if `package.json' will be skipped
-                                              ((string= file "package.json")
-                                               (if (bound-and-true-p eslint-rc-use-package-json)
-                                                   (push (concat "--config " (concat (locate-dominating-file
-                                                                                      default-directory file) file))
-                                                         args)))
-                                              ;; append the rc file to the list when found
-                                              (t (push (concat "--config " (concat (locate-dominating-file
-                                                                                    default-directory file) file))
-                                                       args))))))
+    (cl-letf (((symbol-function 'eslint-rc--add-file)
+               (lambda (file) ;; Builds and store the local rc FILE list if found.
+                 (list :file (concat (locate-dominating-file default-directory file)
+                                     file))))
+              ((symbol-function 'eslint-rc--find-file)
+               (lambda (file) ;; Search the local base directory for local FILE and store to list.
+                 (if (bound-and-true-p file)
+                     (if (locate-dominating-file default-directory file)
+                         (append (eslint-rc--add-file file))))))
+              ((symbol-function 'eslint-rc--build-config)
+               (lambda (file) ;; Build the config arguments
+                 (if (eslint-rc--find-file file)
+                     (cond ((string= file ".eslintignore") ;; check if `.eslintignore' will be skipped
+                            (if (bound-and-true-p eslint-rc-use-eslintignore)
+                                (push (concat "--ignore-path " (concat (locate-dominating-file
+                                                                        default-directory file) file))
+                                      args)))
+                           ;; check if `package.json' will be skipped
+                           ((string= file "package.json")
+                            (if (bound-and-true-p eslint-rc-use-package-json)
+                                (push (concat "--config " (concat (locate-dominating-file
+                                                                   default-directory file) file))
+                                      args)))
+                           ;; append the rc file to the list when found
+                           (t (push (concat "--config " (concat (locate-dominating-file
+                                                                 default-directory file) file))
+                                    args)))))))
 
-      (mapcar #'(lambda (rc)
-                  (eslint-rc--build-config rc))
+      (mapc (lambda (rc)
+                (eslint-rc--build-config rc))
               (list ".eslintrc.js"
                     ".eslintrc.cjs"
                     ".eslintrc.yaml"
@@ -133,6 +137,10 @@
   (if eslint-rc-mode
       (add-hook 'after-save-hook #'eslint-rc nil t)
     (remove-hook 'after-save-hook #'eslint-rc t)))
+
+(declare-function eslint-rc--build-config "eslint-rc" (file))
+(declare-function eslint-rc--add-file "eslint-rc" (file))
+(declare-function eslint-rc--find-config "eslint-rc" (file))
 
 (provide 'eslint-rc)
 ;;; eslint-rc.el ends here
