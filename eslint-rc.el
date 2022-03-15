@@ -93,14 +93,14 @@
                                     args)))))))
 
       (mapc (lambda (rc)
-                (eslint-rc--build-config rc))
-              (list ".eslintrc.js"
-                    ".eslintrc.cjs"
-                    ".eslintrc.yaml"
-                    ".eslintrc.yml"
-                    ".eslintrc.json"
-                    "package.json"
-                    ".eslintignore")))
+              (eslint-rc--build-config rc))
+            (list ".eslintrc.js"
+                  ".eslintrc.cjs"
+                  ".eslintrc.yaml"
+                  ".eslintrc.yml"
+                  ".eslintrc.json"
+                  "package.json"
+                  ".eslintignore")))
 
     ;; only specify eslint-fix-options-options if files are found
     (if (bound-and-true-p args)
