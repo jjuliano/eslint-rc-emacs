@@ -137,7 +137,7 @@
 (declare-function eslint-rc--build-args "eslint-rc" (file arg config))
 (declare-function eslint-rc--build-config "eslint-rc" (file))
 (declare-function eslint-rc--search-file "eslint-rc" (file))
-(declare-function eslint-rc--file-file "eslint-rc" (file))
+(declare-function eslint-rc--file-path "eslint-rc" (file))
 
 (provide 'eslint-rc)
 ;;; eslint-rc.el ends here
