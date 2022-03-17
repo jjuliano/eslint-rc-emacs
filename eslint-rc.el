@@ -64,36 +64,32 @@
   (interactive)
 
   (let (args)
-    (cl-letf (((symbol-function 'eslint-rc--add-file)
-               (lambda (file) ;; Builds and store the local rc FILE list if found.
-                 (list :file (concat (locate-dominating-file default-directory file)
-                                     file))))
-              ((symbol-function 'eslint-rc--find-file)
-               (lambda (file) ;; Search the local base directory for local FILE and store to list.
+    (cl-letf (((symbol-function 'eslint-rc--search-file)
+               (lambda (file) ;; Search the local base directory for local FILE.
                  (if (bound-and-true-p file)
-                     (if (locate-dominating-file default-directory file)
-                         (append (eslint-rc--add-file file))))))
+                     (locate-dominating-file default-directory file))))
+              ((symbol-function 'eslint-rc--file-path)
+               (lambda (file) ;; Return the complete FILE path
+                 (concat (eslint-rc--search-file file) file)))
+              ((symbol-function 'eslint-rc--build-args)
+               (lambda (file arg config) ;; Build an argument list
+                 (if (bound-and-true-p config)
+                     (push (concat (format "%s " arg) (eslint-rc--file-path file))
+                           args))))
               ((symbol-function 'eslint-rc--build-config)
                (lambda (file) ;; Build the config arguments
-                 (if (eslint-rc--find-file file)
-                     (cond ((string= file ".eslintignore") ;; check if `.eslintignore' will be skipped
-                            (if (bound-and-true-p eslint-rc-use-eslintignore)
-                                (push (concat "--ignore-path " (concat (locate-dominating-file
-                                                                        default-directory file) file))
-                                      args)))
-                           ;; check if `package.json' will be skipped
-                           ((string= file "package.json")
-                            (if (bound-and-true-p eslint-rc-use-package-json)
-                                (push (concat "--config " (concat (locate-dominating-file
-                                                                   default-directory file) file))
-                                      args)))
+                 (if (eslint-rc--search-file file)
+                     (cond ((string= ".eslintignore" file) ;; check if `.eslintignore' will be skipped
+                            (eslint-rc--build-args file "--ignore-path"
+                                                   eslint-rc-use-eslintignore))
+                           ((string= "package.json" file) ;; check if `package.json' will be skipped
+                            (eslint-rc--build-args file "--config"
+                                                   eslint-rc-use-package-json))
                            ;; append the rc file to the list when found
-                           (t (push (concat "--config " (concat (locate-dominating-file
-                                                                 default-directory file) file))
+                           (t (push (concat "--config " (eslint-rc--file-path file))
                                     args)))))))
 
-      (mapc (lambda (rc)
-              (eslint-rc--build-config rc))
+      (mapc (lambda (rc) (eslint-rc--build-config rc))
             (list ".eslintrc.js"
                   ".eslintrc.cjs"
                   ".eslintrc.yaml"
@@ -138,9 +134,10 @@
       (add-hook 'after-save-hook #'eslint-rc nil t)
     (remove-hook 'after-save-hook #'eslint-rc t)))
 
+(declare-function eslint-rc--build-args "eslint-rc" (file arg config))
 (declare-function eslint-rc--build-config "eslint-rc" (file))
-(declare-function eslint-rc--add-file "eslint-rc" (file))
-(declare-function eslint-rc--find-file "eslint-rc" (file))
+(declare-function eslint-rc--search-file "eslint-rc" (file))
+(declare-function eslint-rc--file-file "eslint-rc" (file))
 
 (provide 'eslint-rc)
 ;;; eslint-rc.el ends here
