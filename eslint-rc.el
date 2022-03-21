@@ -1,4 +1,4 @@
-;;; eslint-rc.el --- Minor mode for eslint to use local rc rules
+;;; eslint-rc.el --- Use local rc rules with ESLint 
 
 ;; Copyright (C) 2022-2023  Joel Bryan Juliano
 
