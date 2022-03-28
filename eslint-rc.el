@@ -1,22 +1,22 @@
 ;;; eslint-rc.el --- Use local rc rules with ESLint
-
+;;
 ;; Copyright (C) 2022-2023  Joel Bryan Juliano
-
+;;
 ;; SPDX-License-Identifier: GPL-3.0-or-later
-
+;;
 ;; This file is not part of GNU Emacs.
-
+;;
 ;; Author: Joel Bryan Juliano <joelbryan dot juliano at gmail dot com>
 ;; Created: 15 March 2022
 ;; URL: https://github.com/jjuliano/eslint-rc-emacs
 ;; Package-Requires: ((emacs "24.3") (eslint-fix "0.1.0"))
 ;; Version: 0.1.0
 ;; Keywords: convenience edit js ts rc eslintrc eslint-rc eslint eslint-fix
-
+;;
 ;;; Commentary:
-
+;;
 ;; Formats your JavaScript & Typescript code using ESLint and defined rc rules.
-
+;;
 ;; Usage
 ;; -----
 ;;
@@ -31,7 +31,7 @@
 ;;       (add-hook 'typescript-mode-hook 'eslint-rc-mode)
 ;;       (add-hook 'js2-mode-hook 'eslint-rc-mode)
 ;;       (add-hook 'web-mode-hook 'eslint-rc-mode)
-
+;;
 ;;; Code:
 
 (require 'eslint-fix)
