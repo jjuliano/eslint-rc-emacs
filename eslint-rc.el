@@ -108,14 +108,13 @@
       (setq eslint-fix-options '())))
 
   ;; check if prefer to use local eslint via `npm'
-  (progn
-    (if eslint-rc-use-node-modules-bin
-        (let* ((file-name (or (buffer-file-name) default-directory))
-               (root (locate-dominating-file file-name "node_modules"))
-               (eslint (and root
-                            (expand-file-name "node_modules/.bin/eslint" root))))
-          (if (and eslint (file-executable-p eslint))
-              (setq eslint-fix-executable eslint)))))
+  (if eslint-rc-use-node-modules-bin
+      (let* ((file-name (or (buffer-file-name) default-directory))
+             (root (locate-dominating-file file-name "node_modules"))
+             (eslint (and root
+                          (expand-file-name "node_modules/.bin/eslint" root))))
+        (if (and eslint (file-executable-p eslint))
+            (setq eslint-fix-executable eslint))))
 
   ;; finally call eslint --fix
   (eslint-fix)
