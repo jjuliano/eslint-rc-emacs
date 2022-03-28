@@ -1,4 +1,4 @@
-;;; eslint-rc.el --- Use local rc rules with ESLint 
+;;; eslint-rc.el --- Use local rc rules with ESLint
 
 ;; Copyright (C) 2022-2023  Joel Bryan Juliano
 
@@ -38,7 +38,7 @@
 (require 'cl-lib)
 
 (defgroup eslint-rc nil
-  "Minor mode to format JS code on file save using local rc rules"
+  "Minor mode to format JS code on file save using local rc rules."
   :group 'languages
   :prefix 'eslint-rc
   :link '(url-link :tag "Repository"
@@ -126,7 +126,7 @@
 
 ;;;###autoload
 (define-minor-mode eslint-rc-mode
-  "Runs eslint on file save using local rc rules when this mode is turned on"
+  "Runs eslint on file save using local rc rules when this mode is turned on."
   :lighter " Eslint-RC"
   :global nil
   ;; Toggle eslint-rc-mode
